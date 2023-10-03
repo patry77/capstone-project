@@ -1,0 +1,40 @@
+---
+- name: Install Jenkins on GCP VM
+  hosts: ci-vm
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update APT
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Java OpenJDK
+      apt:
+        name: default-jdk
+      when: ansible_os_family == 'Debian'
+
+    - name: Add Jenkins Repository
+      apt_key:
+        url: https://pkg.jenkins.io/debian/jenkins.io.key
+      when: ansible_os_family == 'Debian'
+
+    - name: Add Jenkins APT Repository
+      apt_repository:
+        repo: deb https://pkg.jenkins.io/debian binary/
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Enable and start Jenkins service
+      systemd:
+        name: jenkins
+        enabled: yes
+        state: started
+      when: ansible_os_family == 'Debian'

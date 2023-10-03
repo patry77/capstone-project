@@ -4,7 +4,6 @@ resource "google_compute_instance_template" "vm_instance" {
   disk {
     source_image = "apache"
   }
-
   network_interface {
     network    = var.vpc_network_id
     subnetwork = var.subnetwork_id
