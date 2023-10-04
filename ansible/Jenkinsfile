@@ -28,15 +28,10 @@ pipeline {
             }
         }
         
-        stage('Build and Push Docker Image') {
+        stage('Build docker image') {
             steps {
                 script {
                     sh "./gradlew buildDockerImage"                    
-                    sh "docker tag your-image-name:latest ${NEXUS_URL}/your-image-name:latest"
-                    
-                    withCredentials([usernamePassword(credentialsId: 'NEXUS_CREDENTIALS_ID', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-                        sh "docker login -u ${NEXUS_USERNAME} -p ${NEXUS_PASSWORD} ${NEXUS_URL}"
-                        sh "docker push ${NEXUS_URL}/your-image-name:latest"
                     }
                 }
             }
