@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout Repository') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Set up JDK') {
+            steps {
+                script {
+                    def jdkTool = tool name: 'JDK 19', type: 'hudson.model.JDK$Installations'
+                    env.JAVA_HOME = "${jdkTool}/"
+                    sh "${jdkTool}/bin/java -version"
+                }
+            }
+        }
+        
+        stage('Set up Docker') {
+            steps {
+                script {
+                    def dockerTool = tool name: 'Docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+                    env.PATH = "${dockerTool}:${env.PATH}"
+                    sh 'docker --version'
+                }
+            }
+        }
+        
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    sh "./gradlew buildDockerImage"                    
+                    sh "docker tag your-image-name:latest ${NEXUS_URL}/your-image-name:latest"
+                    
+                    withCredentials([usernamePassword(credentialsId: 'NEXUS_CREDENTIALS_ID', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+                        sh "docker login -u ${NEXUS_USERNAME} -p ${NEXUS_PASSWORD} ${NEXUS_URL}"
+                        sh "docker push ${NEXUS_URL}/your-image-name:latest"
+                    }
+                }
+            }
+        }
+    }
+}

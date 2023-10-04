@@ -24,4 +24,21 @@ resource "google_compute_instance_group_manager" "instance_group_manager" {
 }
 
 
+resource "google_compute_instance" "ci_vm" {
+  name         = var.ci_vm_name
+  machine_type = var.compute_machine_type
 
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-os-cloud/ubuntu-2004-lts"
+    }
+  }
+
+  network_interface {
+    network    = var.vpc_network_id
+  }
+
+  metadata = {
+    hostname = var.ci_vm_hostname
+  }
+}

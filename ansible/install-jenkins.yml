@@ -1,5 +1,5 @@
 ---
-- name: Install Jenkins on GCP VM
+- name: Install Jenkins
   hosts: ci-vm
   become: yes
   gather_facts: yes
@@ -15,12 +15,12 @@
         name: default-jdk
       when: ansible_os_family == 'Debian'
 
-    - name: Add Jenkins Repository
+    - name: Add Jenkins Repository key
       apt_key:
         url: https://pkg.jenkins.io/debian/jenkins.io.key
       when: ansible_os_family == 'Debian'
 
-    - name: Add Jenkins APT Repository
+    - name: Add Jenkins repository
       apt_repository:
         repo: deb https://pkg.jenkins.io/debian binary/
         state: present
@@ -32,9 +32,35 @@
         state: present
       when: ansible_os_family == 'Debian'
 
-    - name: Enable and start Jenkins service
+    - name: Start jenkins
       systemd:
         name: jenkins
         enabled: yes
         state: started
       when: ansible_os_family == 'Debian'
+
+    - name: Install Jenkins Configuration as Code Plugin
+      command: >
+        java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar
+        install-plugin configuration-as-code
+      when: ansible_os_family == 'Debian'
+
+    - name: Create Jenkins Workspace Directory
+      file:
+        path: /var/lib/jenkins/workspace/capstone-project
+        state: directory
+        mode: '0755'
+      when: ansible_os_family == 'Debian'
+    
+    - name: Download Jenkinsfile
+      get_url:
+        url: https://raw.githubusercontent.com/patry77/capstone-project/main/ansible/Jenkinsfile
+        dest: /var/lib/jenkins/workspace/capstone-project/Jenkinsfile
+      when: ansible_os_family == 'Debian'
+      
+    - name: Restart Jenkins service
+      service:
+        name: jenkins
+        state: restarted
+      when: ansible_os_family == 'Debian'
+
