@@ -39,12 +39,6 @@
         state: started
       when: ansible_os_family == 'Debian'
 
-    - name: Install Jenkins Configuration as Code Plugin
-      command: >
-        java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar
-        install-plugin configuration-as-code
-      when: ansible_os_family == 'Debian'
-
     - name: Create Jenkins Workspace Directory
       file:
         path: /var/lib/jenkins/workspace/capstone-project
@@ -57,7 +51,7 @@
         url: https://raw.githubusercontent.com/patry77/capstone-project/main/ansible/Jenkinsfile
         dest: /var/lib/jenkins/workspace/capstone-project/Jenkinsfile
       when: ansible_os_family == 'Debian'
-      
+
     - name: Restart Jenkins service
       service:
         name: jenkins

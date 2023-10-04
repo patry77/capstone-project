@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Repository') {
             steps {
-                checkout scm
+                git(url: 'https://github.com/patry77/capstone-project.git')
             }
         }
         
