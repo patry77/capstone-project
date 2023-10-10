@@ -1,15 +1,11 @@
 ---
 - name: Install Jenkins
-  hosts: ci-vm
+  hosts: 192.168.0.130
+  remote_user: patry
   become: yes
   gather_facts: yes
 
   tasks:
-    - name: Update APT
-      apt:
-        update_cache: yes
-      when: ansible_os_family == 'Debian'
-
     - name: Install Java OpenJDK
       apt:
         name: default-jdk
@@ -17,13 +13,18 @@
 
     - name: Add Jenkins Repository key
       apt_key:
-        url: https://pkg.jenkins.io/debian/jenkins.io.key
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
       when: ansible_os_family == 'Debian'
 
     - name: Add Jenkins repository
       apt_repository:
-        repo: deb https://pkg.jenkins.io/debian binary/
+        repo: deb https://pkg.jenkins.io/debian-stable binary/
         state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Update APT
+      apt:
+        update_cache: yes
       when: ansible_os_family == 'Debian'
 
     - name: Install Jenkins
@@ -51,8 +52,9 @@
         url: https://raw.githubusercontent.com/patry77/capstone-project/main/ansible/Jenkinsfile
         dest: /var/lib/jenkins/workspace/capstone-project/Jenkinsfile
       when: ansible_os_family == 'Debian'
+      
 
-    - name: Restart Jenkins service
+    - name: Restart Jenkins
       service:
         name: jenkins
         state: restarted

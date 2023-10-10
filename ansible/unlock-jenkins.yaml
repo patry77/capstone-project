@@ -1,0 +1,32 @@
+---
+- name: Unlock Jenkins
+  hosts: 192.168.0.130
+  remote_user: patry
+  become: yes
+
+  tasks:
+    - name: Copy initial admin password
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: admin_password
+      changed_when: false
+
+    - name: Unlock Jenkins
+      shell: |
+        echo '{{ admin_password.stdout }}' | java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080/ -auth admin:{{ admin_password.stdout }} -noKeyAuth groovy = <(cat <<EOF
+        import jenkins.model.*
+        import hudson.security.*
+
+        def instance = Jenkins.getInstance()
+        def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+        hudsonRealm.createAccount('admin', '{{ admin_password.stdout }}')
+        instance.setSecurityRealm(hudsonRealm)
+        def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+        strategy.setAllowAnonymousRead(false)
+        instance.setAuthorizationStrategy(strategy)
+        instance.save()
+        println('Jenkins is unlocked and configured!')
+        EOF
+        )
+      args:
+        executable: /bin/bash
+      ignore_errors: true
