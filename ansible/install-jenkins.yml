@@ -40,23 +40,3 @@
         state: started
       when: ansible_os_family == 'Debian'
 
-    - name: Create Jenkins Workspace Directory
-      file:
-        path: /var/lib/jenkins/workspace/capstone-project
-        state: directory
-        mode: '0755'
-      when: ansible_os_family == 'Debian'
-    
-    - name: Download Jenkinsfile
-      get_url:
-        url: https://raw.githubusercontent.com/patry77/capstone-project/main/ansible/Jenkinsfile
-        dest: /var/lib/jenkins/workspace/capstone-project/Jenkinsfile
-      when: ansible_os_family == 'Debian'
-      
-
-    - name: Restart Jenkins
-      service:
-        name: jenkins
-        state: restarted
-      when: ansible_os_family == 'Debian'
-

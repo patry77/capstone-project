@@ -1,0 +1,63 @@
+---
+- name: Configure Nexus
+  hosts: 192.168.0.166
+  remote_user: patry
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Get password from docker container
+      community.docker.docker_container_exec:
+        container: sonatype-nexus
+        command: cat /nexus-data/admin.password
+        detach: no
+      register: exec_result
+
+    - name: Capture Admin Password
+      set_fact:
+        admin_password: "{{ exec_result.stdout | b64decode }}"
+
+    - name: Configure Docker Bearer Token Realm
+      uri:
+        url: "http://localhost:8081/service/rest/v1/security/realms/active"
+        method: PUT
+        user: admin
+        password: test123
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 204
+        headers:
+          Content-Type: "application/json"
+        body: |
+          [
+            "NexusAuthenticatingRealm",
+            "DockerToken"
+          ]
+
+    - name: Configure Docker Hosted Repository
+      uri:
+        url: http://localhost:8081/service/rest/v1/repositories/docker/hosted
+        method: POST
+        user: admin
+        password: test123
+        force_basic_auth: true
+        body: |
+          {
+            "name": "spring-petclinic",
+            "online": true,
+            "docker": {
+              "v1Enabled": false,
+              "forceBasicAuth": false,
+              "httpPort": 8082
+
+            },
+            "storage": {
+              "blobStoreName": "default",
+              "strict_content_validation": true,
+              "writePolicy": "ALLOW",
+              "strictContentTypeValidation": true
+            }
+          }
+        status_code: 201
+        headers:
+          Content-Type: application/json
+          Authorization: "Basic admin:tretre"
