@@ -60,4 +60,3 @@
         status_code: 201
         headers:
           Content-Type: application/json
-          Authorization: "Basic admin:tretre"

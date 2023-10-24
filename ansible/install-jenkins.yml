@@ -1,6 +1,6 @@
 ---
 - name: Install Jenkins
-  hosts: 192.168.0.130
+  hosts: 192.168.0.166
   remote_user: patry
   become: yes
   gather_facts: yes
@@ -8,7 +8,7 @@
   tasks:
     - name: Install Java OpenJDK
       apt:
-        name: default-jdk
+        name: openjdk-17-jdk
       when: ansible_os_family == 'Debian'
 
     - name: Add Jenkins Repository key
