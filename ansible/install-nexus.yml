@@ -1,21 +1,10 @@
 ---
 - name: Install Nexus
-  hosts: 192.168.0.166
+  hosts: 192.168.0.101
   remote_user: patry
   become: yes
   gather_facts: yes
   tasks:
-  - name: Install Docker
-    apt:
-      name: docker.io
-      state: present
-    when: ansible_os_family == "Debian"
-
-  - name: Start Docker service
-    service:
-      name: docker
-      state: started
-
   - name: Pull Sonatype Nexus Docker image
     docker_image:
       name: sonatype/nexus3

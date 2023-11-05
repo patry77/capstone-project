@@ -17,6 +17,6 @@ provider "google" {
   region      = var.region
   zone        = var.zone
 }
-provider "cloudflare" {
-  api_token = var.cloudflare_token
-}
+# provider "cloudflare" {
+#   api_token = var.cloudflare_token
+# }

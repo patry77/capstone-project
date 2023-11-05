@@ -1,0 +1,26 @@
+---
+- name: Configure Nexus
+  hosts: 192.168.0.101
+  remote_user: patry
+  become: yes
+  gather_facts: yes
+  tasks:
+      - name: Update APT
+        apt:
+          update_cache: yes
+        when: ansible_os_family == 'Debian'
+        
+      - name: Install Java OpenJDK
+        apt:
+          name: openjdk-17-jdk
+        when: ansible_os_family == 'Debian'
+
+      - name: Install Docker
+        apt:
+          name: docker.io
+          state: present
+        when: ansible_os_family == "Debian"
+
+      - name: Install python-docker
+        pip:
+          name: docker

@@ -46,19 +46,16 @@ variable "firewall_rule_name" {
   description = "Name of the firewall rule"
   type        = string
 }
-variable "vpc_network_name" {
-  description = "VPC network name"
-  type        = string
-}
-variable "subnetwork_name" {
-  description = "Subnetwork name"
-  type        = string
-}
 variable "limiter_ips" {
   description = "List of IPs to allow access to the load balancer"
   type        = list(string)
 }
-variable "subnetwork_cidr_range" {
-  description = "CIDR Range"
+variable "vpc_network_name" {
+  description = "VPC network name"
+  type        = string
+}
+
+variable "subnetwork_name" {
+  description = "Subnetwork name"
   type        = string
 }

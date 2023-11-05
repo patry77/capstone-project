@@ -1,6 +1,6 @@
 ---
 - name: Unlock Jenkins
-  hosts: 192.168.0.166
+  hosts: 192.168.0.101
   remote_user: patry
   become: yes
 
@@ -11,12 +11,12 @@
       changed_when: false
     - name: Download Jenkins CLI
       get_url:
-        url: http://localhost:8080/jnlpJars/jenkins-cli.jar
+        url: http://localhost:8085/jnlpJars/jenkins-cli.jar
         dest: /home/patry/jenkins-cli.jar
         mode: 0755
     - name: Unlock Jenkins
       shell: |
-        echo '{{ admin_password.stdout }}' | java -jar /home/patry/jenkins-cli.jar -s http://localhost:8080/ -auth admin:{{ admin_password.stdout }} groovy = <<EOF
+        echo '{{ admin_password.stdout }}' | java -jar /home/patry/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ admin_password.stdout }} groovy = <<EOF
         import jenkins.model.*
         import hudson.security.*
 
@@ -39,4 +39,9 @@
         dest=/usr/lib/systemd/system/jenkins.service
         regexp='^Environment="JAVA_OPTS=-Djava.awt.headless=true'
         line='Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
-      register: result_skip_startup_wizard
+
+    - name: Restart jenkins
+      systemd:
+        name: jenkins
+        state: restarted
+      when: ansible_os_family == 'Debian'

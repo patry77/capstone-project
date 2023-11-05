@@ -1,20 +1,24 @@
 ---
 - name: Configure Nexus
-  hosts: 192.168.0.166
+  hosts: 192.168.0.101
   remote_user: patry
   become: yes
   gather_facts: yes
   tasks:
-    - name: Get password from docker container
-      community.docker.docker_container_exec:
-        container: sonatype-nexus
-        command: cat /nexus-data/admin.password
-        detach: no
-      register: exec_result
+    # - name: Get password from docker container
+    #   community.docker.docker_container_exec:
+    #     container: nexus
+    #     command: cat /nexus-data/admin.password
+    #     detach: no
+    #   register: exec_result
 
-    - name: Capture Admin Password
-      set_fact:
-        admin_password: "{{ exec_result.stdout | b64decode }}"
+    # - name: Capture Admin Password
+    #   set_fact:
+    #     admin_password: "{{ exec_result.stdout | b64decode }}"
+
+    # - name: Display admin password
+    #   debug:
+    #     msg: "{{ admin_password }}"
 
     - name: Configure Docker Bearer Token Realm
       uri:
@@ -23,7 +27,6 @@
         user: admin
         password: test123
         force_basic_auth: true
-        validate_certs: false
         status_code: 204
         headers:
           Content-Type: "application/json"

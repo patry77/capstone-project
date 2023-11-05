@@ -15,7 +15,6 @@ module "network" {
   forwarding_rule_name       = var.forwarding_rule_name
   forwarding_rule_port_range = var.forwarding_rule_port_range
   firewall_rule_name         = var.firewall_rule_name
-  subnetwork_cidr_range      = var.subnetwork_cidr_range
 }
 
 module "compute" {

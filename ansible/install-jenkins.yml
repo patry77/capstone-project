@@ -1,16 +1,11 @@
 ---
 - name: Install Jenkins
-  hosts: 192.168.0.166
+  hosts: 192.168.0.101
   remote_user: patry
   become: yes
   gather_facts: yes
 
   tasks:
-    - name: Install Java OpenJDK
-      apt:
-        name: openjdk-17-jdk
-      when: ansible_os_family == 'Debian'
-
     - name: Add Jenkins Repository key
       apt_key:
         url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -33,10 +28,17 @@
         state: present
       when: ansible_os_family == 'Debian'
 
-    - name: Start jenkins
+    - name: Change Jenkins Port
+      blockinfile:
+        path: /etc/systemd/system/jenkins.service.d/override.conf
+        block: |
+          [Service]
+          Environment="JENKINS_PORT=8085"
+        insertafter: EOF
+
+    - name: Restart jenkins
       systemd:
         name: jenkins
-        enabled: yes
-        state: started
+        state: restarted
       when: ansible_os_family == 'Debian'
 

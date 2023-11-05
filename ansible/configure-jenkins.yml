@@ -1,6 +1,6 @@
 ---
 - name: Configure jenkins
-  hosts: 192.168.0.166
+  hosts: 192.168.0.101
   remote_user: patry
   become: yes
 
@@ -10,7 +10,7 @@
         name: "{{ item }}"
         url_username: "admin"
         url_password: "test123"
-        url: http://localhost:8080
+        url: http://localhost:8085
         timeout: 120
         state: latest
       with_items:  
@@ -104,7 +104,7 @@
 
     - name: Configure Jenkins Job with Jenkinsfile
       shell: |
-          java -jar /home/patry/jenkins-cli.jar -s http://localhost:8080/ -auth admin:test123 groovy = <<EOF
+          java -jar /home/patry/jenkins-cli.jar -s http://localhost:8085/ -auth admin:test123 groovy = <<EOF
           import jenkins.model.Jenkins
           def jenkins = Jenkins.instance
           import hudson.plugins.git.*;
@@ -115,7 +115,7 @@
           def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, "Jenkinsfile")
 
           def parent = Jenkins.instance
-          def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, "New Job")
+          def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, "spring-petclinic")
           job.definition = flowDefinition
 
           parent.reload()
