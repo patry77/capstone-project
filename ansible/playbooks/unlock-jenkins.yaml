@@ -1,10 +1,12 @@
 ---
 - name: Unlock Jenkins
-  hosts: 192.168.0.101
-  remote_user: patry
+  hosts: "{{ host }}"
+  remote_user: "{{ vm_user }}"
   become: yes
 
   tasks:
+    - name: Include encrypted variables
+      include_vars: vault/credentials.yml
     - name: Copy initial admin password
       command: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: admin_password
@@ -22,7 +24,7 @@
 
         def instance = Jenkins.getInstance()
         def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-        hudsonRealm.createAccount('admin', 'test123')
+        hudsonRealm.createAccount('admin', '{{ jenkis_password }}')
         def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
         strategy.setAllowAnonymousRead(false)
 

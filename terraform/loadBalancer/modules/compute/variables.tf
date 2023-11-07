@@ -30,3 +30,20 @@ variable "group_manager_size" {
   description = "Size of the group manager"
   type        = number
 }
+
+variable "image" {
+  description = "Image for the container"
+  type        = string
+  
+}
+
+variable "activate_tty" {
+  description = "Activate tty"
+  type        = bool
+}
+
+variable "insecure_host" {
+  description = "Insecure host"
+  type        = string
+  
+}

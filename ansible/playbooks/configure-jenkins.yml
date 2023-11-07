@@ -1,15 +1,18 @@
 ---
 - name: Configure jenkins
-  hosts: 192.168.0.101
-  remote_user: patry
+  hosts: pipelinevm
+  remote_user: "{{ vm_user }}"
   become: yes
 
   tasks:
+    - name: Include encrypted variables
+      include_vars: vault/credentials.yml
+
     - name: Install Jenkins plugins
       community.general.jenkins_plugin:
         name: "{{ item }}"
         url_username: "admin"
-        url_password: "test123"
+        url_password: "{{ jenkins_password }}"
         url: http://localhost:8085
         timeout: 120
         state: latest
@@ -104,7 +107,7 @@
 
     - name: Configure Jenkins Job with Jenkinsfile
       shell: |
-          java -jar /home/patry/jenkins-cli.jar -s http://localhost:8085/ -auth admin:test123 groovy = <<EOF
+          java -jar /home/patry/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkins_password }} groovy = <<EOF
           import jenkins.model.Jenkins
           def jenkins = Jenkins.instance
           import hudson.plugins.git.*;
@@ -123,3 +126,20 @@
       args:
         executable: /bin/bash
       ignore_errors: true
+    - name: Add Jenkins credentials
+      shell: |
+          java -jar /home/patry/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
+          import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
+          import com.cloudbees.plugins.credentials.*
+
+          def creds = new UsernamePasswordCredentialsImpl(
+              CredentialsScope.GLOBAL,
+              "githubToken",
+              "GitHub Token",
+              "{{github_login}}",
+              "{{github_key}}"
+          )
+
+          SystemCredentialsProvider.getInstance().getCredentials().add(creds)
+          SystemCredentialsProvider.getInstance().save()
+          EOF

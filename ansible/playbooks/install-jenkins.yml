@@ -1,11 +1,12 @@
 ---
 - name: Install Jenkins
-  hosts: 192.168.0.101
-  remote_user: patry
+  hosts: pipelinevm
+  remote_user: "{{ vm_user }}"
   become: yes
-  gather_facts: yes
 
   tasks:
+    - name: Include encrypted variables
+      include_vars: vault/credentials.yml
     - name: Add Jenkins Repository key
       apt_key:
         url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -33,7 +34,7 @@
         path: /etc/systemd/system/jenkins.service.d/override.conf
         block: |
           [Service]
-          Environment="JENKINS_PORT=8085"
+          Environment="JENKINS_PORT={{ jenkins_port }}}"
         insertafter: EOF
 
     - name: Restart jenkins

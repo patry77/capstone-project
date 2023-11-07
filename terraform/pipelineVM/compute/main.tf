@@ -11,4 +11,7 @@ resource "google_compute_instance" "ci_cd_vm_name" {
   network_interface {
     network = var.vpc_network_name
   }
+    metadata = {
+    ssh-keys = var.ssh_public_key
+  }
 }

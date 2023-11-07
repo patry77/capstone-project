@@ -1,0 +1,88 @@
+name: Develop lint check
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  terraform_loadbalancer:
+    name: Terraform Load Balancer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.5
+
+      - name: Terraform Load Balancer Format
+        run: terraform fmt -check -recursive
+        working-directory: terraform/loadbalancer
+
+      - name: Terraform Load Balancer Linting
+        run: terraform validate
+        working-directory: terraform/loadbalancer
+
+      - name: Terraform Load Balancer Init
+        run: terraform init
+        working-directory: terraform/loadbalancer
+
+      - name: Terraform Load Balancer Plan
+        run: terraform plan -input=false -out=tfplan_loadbalancer
+        working-directory: terraform/loadbalancer
+
+  terraform_pipelinevm:
+    name: Terraform Pipeline VM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.5
+
+      - name: Terraform Pipeline VM Format
+        run: terraform fmt -check -recursive
+        working-directory: terraform/pipelinevm
+
+      - name: Terraform Pipeline VM Linting
+        run: terraform validate
+        working-directory: terraform/pipelinevm
+
+      - name: Terraform Pipeline VM Init
+        run: terraform init
+        working-directory: terraform/pipelinevm
+
+      - name: Terraform Pipeline VM Plan
+        run: terraform plan -input=false -out=tfplan_pipelinevm
+        working-directory: terraform/pipelinevm
+  ansible_checks:
+    name: Ansible Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Check Ansible playbooks syntax and linting
+        run: |
+          playbooks=("ansible/playbooks/configure-jenkins.yml" "ansible/playbooks/configure-nexus.yml" "ansible/playbooks/configure-vm.yml" "ansible/playbooks/unlock-jenkins.yml" "ansible/playbooks/install-jenkins.yml" "ansible/playbooks/install-nexus.yml")
+          for playbook in "${playbooks[@]}"; do
+            ansible-playbook --syntax-check $playbook
+            ansible-lint $playbook
+          done
