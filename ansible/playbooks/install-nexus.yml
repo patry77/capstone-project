@@ -1,9 +1,8 @@
 ---
 - name: Install Nexus
-  hosts: 192.168.0.101
-  remote_user: patry
+  hosts: pipelinevm
+  remote_user: "{{ vm_user }}"
   become: yes
-  gather_facts: yes
   tasks:
   - name: Pull Sonatype Nexus Docker image
     docker_image:

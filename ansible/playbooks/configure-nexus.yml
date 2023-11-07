@@ -1,31 +1,45 @@
 ---
 - name: Configure Nexus
-  hosts: 192.168.0.101
-  remote_user: patry
+  hosts: pipelinevm
+  remote_user: "{{ vm_user }}"
   become: yes
-  gather_facts: yes
   tasks:
-    # - name: Get password from docker container
-    #   community.docker.docker_container_exec:
-    #     container: nexus
-    #     command: cat /nexus-data/admin.password
-    #     detach: no
-    #   register: exec_result
+    - name: Include encrypted variables
+      include_vars: ../vault/credentials.yml
 
-    # - name: Capture Admin Password
-    #   set_fact:
-    #     admin_password: "{{ exec_result.stdout | b64decode }}"
+    - name: Get password from docker container
+      community.docker.docker_container_exec:
+        container: nexus
+        command: cat /nexus-data/admin.password
+        detach: no
+      register: exec_result
 
-    # - name: Display admin password
-    #   debug:
-    #     msg: "{{ admin_password }}"
+    - name: Capture Admin Password
+      set_fact:
+        admin_password: "{{ exec_result.stdout }}"
 
+
+    - name: Change Nexus admin password
+      uri:
+        url: 'http://192.168.0.101:8081/service/rest/v1/security/users/admin/change-password'
+        method: PUT
+        user: admin
+        password: "{{ admin_password }}"
+        force_basic_auth: true
+        headers:
+          accept: 'application/json'
+          Content-Type: 'text/plain'
+        body: '{{ nexus_password }}'
+        status_code: 204
+
+    - debug:
+        var: result
     - name: Configure Docker Bearer Token Realm
       uri:
         url: "http://localhost:8081/service/rest/v1/security/realms/active"
         method: PUT
         user: admin
-        password: test123
+        password: "{{ nexus_password }}"
         force_basic_auth: true
         status_code: 204
         headers:
@@ -41,7 +55,7 @@
         url: http://localhost:8081/service/rest/v1/repositories/docker/hosted
         method: POST
         user: admin
-        password: test123
+        password: "{{ nexus_password }}"
         force_basic_auth: true
         body: |
           {
@@ -63,3 +77,4 @@
         status_code: 201
         headers:
           Content-Type: application/json
+        ignore_errors: true
