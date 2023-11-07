@@ -17,3 +17,7 @@ variable "ssh_public_key" {
   description = "SSH public key"
   type        = string
 }
+variable "credentials_file" {
+  description = "Path to the credentials file"
+  type        = string
+}

@@ -136,8 +136,8 @@
               CredentialsScope.GLOBAL,
               "githubToken",
               "GitHub Token",
-              "patry77",
-              "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"
+              "{{github_login}}",
+              "{{github_key}}"
           )
 
           SystemCredentialsProvider.getInstance().getCredentials().add(creds)
