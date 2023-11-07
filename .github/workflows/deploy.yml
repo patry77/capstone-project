@@ -12,7 +12,7 @@ jobs:
       - name: Terraform apply for pipelinevm
         run: |
           cd pipelinevm
-          terraform plan -var "ssh_public_key=${TF_VAR_ssh_private_key}"
-          terraform apply -var "ssh_public_keyy=${TF_VAR_ssh_private_key}" -auto-approve
+          terraform plan -var "ssh_public_key=${TF_VAR_ssh_public_key}"
+          terraform apply -var "ssh_public_keyy=${TF_VAR_ssh_public_key}" -auto-approve
       - name: Install nexus on pipelinevm
         run: ansible-playbook -i inventory/pipelinevm/inventory install-nexus.yml
