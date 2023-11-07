@@ -21,19 +21,19 @@ jobs:
 
       - name: Terraform Load Balancer Format
         run: terraform fmt -check -recursive
-        working-directory: terraform/loadbalancer
+        working-directory: terraform/loadbBalancer
 
       - name: Terraform Load Balancer Linting
         run: terraform validate
-        working-directory: terraform/loadbalancer
+        working-directory: terraform/loadBalancer
 
       - name: Terraform Load Balancer Init
         run: terraform init
-        working-directory: terraform/loadbalancer
+        working-directory: terraform/loadBalancer
 
       - name: Terraform Load Balancer Plan
         run: terraform plan -input=false -out=tfplan_loadbalancer
-        working-directory: terraform/loadbalancer
+        working-directory: terraform/loadBalancer
 
   terraform_pipelinevm:
     name: Terraform Pipeline VM
@@ -50,19 +50,19 @@ jobs:
 
       - name: Terraform Pipeline VM Format
         run: terraform fmt -check -recursive
-        working-directory: terraform/pipelinevm
+        working-directory: terraform/pipelineVM
 
       - name: Terraform Pipeline VM Linting
         run: terraform validate
-        working-directory: terraform/pipelinevm
+        working-directory: terraform/pipelineVM
 
       - name: Terraform Pipeline VM Init
         run: terraform init
-        working-directory: terraform/pipelinevm
+        working-directory: terraform/pipelineVM
 
       - name: Terraform Pipeline VM Plan
         run: terraform plan -input=false -out=tfplan_pipelinevm
-        working-directory: terraform/pipelinevm
+        working-directory: terraform/pipelineVM
   ansible_checks:
     name: Ansible Checks
     runs-on: ubuntu-latest
