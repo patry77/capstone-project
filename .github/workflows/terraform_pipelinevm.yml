@@ -34,7 +34,7 @@ jobs:
           terraform output -raw vm_public_ip
           tf_ip=$(terraform output -raw vm_public_ip)
           cleaned_ip=$(echo "${tf_ip}" | awk -F: '{print $1}')
-          echo "ip_address=$cleaned_ip" >> $GITHUB_OUTPUT
+          echo "ip_address=$cleaned_ip" >> "$GITHUB_OUTPUT"
         working-directory: ./terraform/pipelineVM
 
   deploy_ansible:
