@@ -30,8 +30,8 @@ jobs:
 
       - name: Get Outputs
         id: outputs
-        run: echo "ip_address = $(terraform output -raw vm_public_ip)" >> $GITHUB_OUTPUT
-        
+        run: echo "ip_address = $(terraform output -raw vm_public_ip)" >> "$GITHUB_OUTPUT"
+
   deploy_ansible:
     needs: deploy_terraform
     runs-on: ubuntu-latest
