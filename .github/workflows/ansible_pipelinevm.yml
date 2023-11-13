@@ -34,7 +34,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Run Ansible Playbook
-        run: ansible-playbook -i "${{ needs.Terraform_Pipeline_VM_Deployment.outputs.ip_address }}," --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE playbooks/configure_vm.yml
+        run: ansible-playbook -i "${{ needs.Terraform_Pipeline_VM_Deployment.outputs.ip_address }}" --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE ./playbooks/configure_vm.yml
         env:
           gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
         working-directory: ./ansible
