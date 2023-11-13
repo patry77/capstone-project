@@ -30,6 +30,7 @@ jobs:
         id: outputs
         run: echo "::set-output name=ip_address::$(terraform output -raw vm_public_ip)"
   deploy_ansible:
+    needs: deploy_terraform
     runs-on: ubuntu-latest
 
     env:
