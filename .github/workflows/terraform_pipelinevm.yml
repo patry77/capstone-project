@@ -18,15 +18,15 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
 
-      - name: Change to Terraform directory
-        run: cd terraform/pipelinevm
-
       - name: Initialize Terraform
         run: terraform init -input=false
+        working-directory: ./terraform/pipelineVM
 
       - name: Deploy Infrastructure
         run: terraform apply -auto-approve
+        working-directory: ./terraform/pipelineVM
 
       - name: Get Outputs
         id: outputs
         run: echo "::set-output name=ip_address::$(terraform output -raw vm_public_ip)"
+        working-directory: ./terraform/pipelineVM
