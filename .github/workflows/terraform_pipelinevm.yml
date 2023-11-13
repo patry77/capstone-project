@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  deploy:
+  deploy_terraform:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,4 +29,34 @@ jobs:
       - name: Get Outputs
         id: outputs
         run: echo "::set-output name=ip_address::$(terraform output -raw vm_public_ip)"
-        working-directory: ./terraform/pipelineVM
+  deploy_ansible:
+    runs-on: ubuntu-latest
+
+    env:
+      ANSIBLE_VAULT_PASSWORD_FILE: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Set SSH Private Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i ${{ needs.deploy_terraform.outputs.ip_address }} --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE ./playbooks/configure-vm.yml
+        env:
+          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        working-directory: ./ansible
