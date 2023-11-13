@@ -59,6 +59,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+
       - name: Run Ansible Playbook
         run: ansible-playbook -i ${{ needs.deploy_terraform.outputs.ip_address }} --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE ./playbooks/configure-vm.yml
         env:
