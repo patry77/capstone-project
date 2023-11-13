@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      ip_address: ${{ steps.deploy_infrastructure.outputs.ip_address }}
+      ip_address: ${{ steps.getip.outputs.ip_address }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -29,7 +29,7 @@ jobs:
         working-directory: ./terraform/pipelineVM
 
       - name: Get Outputs
-        id: outputs
+        id: getip
         run: echo "ip_address = $(terraform output -raw vm_public_ip)" >> "$GITHUB_OUTPUT"
 
   deploy_ansible:
