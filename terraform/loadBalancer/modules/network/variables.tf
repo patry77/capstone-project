@@ -59,3 +59,8 @@ variable "subnetwork_name" {
   description = "Subnetwork name"
   type        = string
 }
+
+variable "subnetwork_cidr_range" {
+  description = "Subnetwork CIDR"
+  type        = string
+}

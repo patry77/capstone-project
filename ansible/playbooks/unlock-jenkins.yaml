@@ -7,18 +7,21 @@
   tasks:
     - name: Include encrypted variables
       include_vars: vault/credentials.yml
+      
     - name: Copy initial admin password
       command: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: admin_password
       changed_when: false
+
     - name: Download Jenkins CLI
       get_url:
         url: http://localhost:8085/jnlpJars/jenkins-cli.jar
-        dest: /home/patry/jenkins-cli.jar
+        dest: /home/{{ vm_user }}/jenkins-cli.jar
         mode: 0755
+
     - name: Unlock Jenkins
       shell: |
-        echo '{{ admin_password.stdout }}' | java -jar /home/patry/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ admin_password.stdout }} groovy = <<EOF
+        echo '{{ admin_password.stdout }}' | java -jar /home/{{ vm_user }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ admin_password.stdout }} groovy = <<EOF
         import jenkins.model.*
         import hudson.security.*
 
@@ -36,6 +39,7 @@
       args:
         executable: /bin/bash
       ignore_errors: true
+      
     - name: Jenkins Skip setup
       lineinfile:
         dest=/usr/lib/systemd/system/jenkins.service

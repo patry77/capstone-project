@@ -74,7 +74,7 @@ variable "forwarding_rule_name" {
 variable "forwarding_rule_port_range" {
   description = "Port range of the forwarding rule"
   type        = string
-  default     = "80"
+  default     = "8080"
 }
 
 variable "firewall_rule_name" {
@@ -119,11 +119,29 @@ variable "compute_machine_type" {
 variable "group_manager_port" {
   description = "Port of the group manager"
   type        = number
-  default     = 80
+  default     = 8080
 }
 
 variable "group_manager_size" {
   description = "Size of the group manager"
   type        = number
   default     = 3
+}
+
+variable "image" {
+  description = "Image of the VM"
+  type        = string
+  default     = "ubuntu-os-cloud/ubuntu-1804-lts"
+}
+
+variable "activate_tty" {
+  description = "Activate TTY"
+  type        = bool
+  default     = true
+}
+
+variable "insecure_host" {
+  description = "Insecure host"
+  type        = string
+  default     = "gcr.io"
 }

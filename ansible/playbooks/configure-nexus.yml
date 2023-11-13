@@ -21,7 +21,7 @@
 
     - name: Change Nexus admin password
       uri:
-        url: 'http://192.168.0.101:8081/service/rest/v1/security/users/admin/change-password'
+        url: 'http://localhost:8081/service/rest/v1/security/users/admin/change-password'
         method: PUT
         user: admin
         password: "{{ admin_password }}"
