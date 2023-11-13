@@ -42,9 +42,6 @@ jobs:
     needs: deploy_terraform
     runs-on: ubuntu-latest
 
-    env:
-      ANSIBLE_VAULT_PASSWORD_FILE: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

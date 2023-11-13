@@ -1,7 +1,6 @@
 ---
-- name: Configure Nexus
-  hosts: pipelinevm
-  remote_user: "{{ vm_user }}"
+- name: Configure VM
+  hosts: all
   become: yes
   tasks:
   
@@ -40,7 +39,7 @@
 
       - name: Install Google Cloud CLI using Snap
         command: snap install google-cloud-sdk --classic
-        
+
       - name: Set GCP Service Account Key
         ansible.builtin.set_fact:
           gcp_service_account_key: "{{ lookup('env', 'gcp_service_account_key') }}"
@@ -48,4 +47,4 @@
       - name: Copy GCP service account file
         copy:
           content: "{{ gcp_service_account_key }}"
-          dest: /home/{{ vm_user }}/gcp-service-account.json
+          dest: /home/ubuntu/gcp-service-account.json
