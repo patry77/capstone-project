@@ -1,7 +1,7 @@
 ---
 - name: Install Jenkins
-  hosts: pipelinevm
-  remote_user: "{{ vm_user }}"
+  hosts: all
+  remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
   become: yes
 
   tasks:

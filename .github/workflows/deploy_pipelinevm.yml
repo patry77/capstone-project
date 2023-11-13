@@ -42,6 +42,8 @@ jobs:
     needs: deploy_terraform
     runs-on: ubuntu-latest
 
+    env:
+      REMOTE_USER: ubuntu
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
