@@ -17,9 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Change to Ansible directory
-        run: cd ansible
-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -34,6 +31,7 @@ jobs:
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
       - name: Run Ansible Playbook
-        run: ansible-playbook -i "${{ needs.Terraform Deployment.outputs.ip_address }}," --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE playbooks/configure_vm.yml
+        run: ansible-playbook -i "${{ needs.Terraform Pipeline VM Deployment.outputs.ip_address }}," --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE playbooks/configure_vm.yml
         env:
           gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        working-directory: ./ansible
