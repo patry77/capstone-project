@@ -61,7 +61,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ needs.deploy_terraform.outputs.ip_address }}
 
       - name: Run Ansible Playbook
         run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
