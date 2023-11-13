@@ -1,0 +1,39 @@
+name: Ansible Pipeline VM Deployment
+
+on:
+  workflow_run:
+    workflows: ["Terraform Pipeline VM Deployment"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      ANSIBLE_VAULT_PASSWORD_FILE: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Change to Ansible directory
+        run: cd ansible
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Set SSH Private Key
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i "${{ needs.Terraform Deployment.outputs.ip_address }}," --vault-password-file $ANSIBLE_VAULT_PASSWORD_FILE playbooks/configure_vm.yml
+        env:
+          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
