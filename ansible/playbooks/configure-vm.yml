@@ -24,3 +24,28 @@
       - name: Install python-docker
         pip:
           name: docker
+
+      - name: Install Snapd
+        apt:
+          name: snapd
+          state: present
+        when: ansible_os_family == "Debian"
+
+      - name: Start and enable the Snapd service
+        service:
+          name: snapd
+          state: started
+          enabled: yes
+        when: ansible_os_family == "Debian"
+
+      - name: Install Google Cloud CLI using Snap
+        command: snap install google-cloud-sdk --classic
+        
+      - name: Set GCP Service Account Key
+        ansible.builtin.set_fact:
+          gcp_service_account_key: "{{ lookup('env', 'gcp_service_account_key') }}"
+
+      - name: Copy GCP service account file
+        copy:
+          content: "{{ gcp_service_account_key }}"
+          dest: /home/{{ vm_user }}/gcp-service-account.json

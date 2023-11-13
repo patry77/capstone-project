@@ -34,7 +34,7 @@ variable "group_manager_size" {
 variable "image" {
   description = "Image for the container"
   type        = string
-  
+
 }
 
 variable "activate_tty" {
@@ -45,5 +45,11 @@ variable "activate_tty" {
 variable "insecure_host" {
   description = "Insecure host"
   type        = string
-  
+
+}
+
+variable "path_to_startup_script" {
+  description = "Path to startup script"
+  type        = string
+  default = "C:\\Users\\patry\\Desktop\\my-repos\\capstone-project\\terraform\\loadBalancer\\modules\\compute\\startup-script.sh"
 }
