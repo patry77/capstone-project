@@ -28,9 +28,9 @@
 
       - name: Install Pip
         apt:
-          name: python-pip
+          name: python3-pip
           state: present
-          
+
       - name: Install python-docker
         pip:
           name: docker

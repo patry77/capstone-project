@@ -4,8 +4,6 @@
   remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
   become: yes
   tasks:
-    - name: Include encrypted variables
-      include_vars: ../vault/credentials.yml
 
     - name: Get password from docker container
       community.docker.docker_container_exec:

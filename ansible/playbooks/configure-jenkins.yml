@@ -5,9 +5,6 @@
   become: yes
 
   tasks:
-    - name: Include encrypted variables
-      include_vars: vault/credentials.yml
-
     - name: Install Jenkins plugins
       community.general.jenkins_plugin:
         name: "{{ item }}"
@@ -107,7 +104,7 @@
 
     - name: Configure Jenkins Job with Jenkinsfile
       shell: |
-          java -jar /home/{{ vm_user }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkins_password }} groovy = <<EOF
+          java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkins_password }} groovy = <<EOF
           import jenkins.model.Jenkins
           def jenkins = Jenkins.instance
           import hudson.plugins.git.*;
@@ -128,7 +125,7 @@
       ignore_errors: true
     - name: Add Github credentials
       shell: |
-          java -jar /home/{{ vm_user }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
+          java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
           import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
           import com.cloudbees.plugins.credentials.*
 
@@ -145,7 +142,7 @@
           EOF
     - name: Add Nexus credentials
       shell: |
-          java -jar /home/{{ vm_user }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
+          java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
           import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
           import com.cloudbees.plugins.credentials.*
 
@@ -162,7 +159,7 @@
           EOF
     - name: Add GCP credentials
       shell: |
-          java -jar /home/{{ vm_user }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
+          java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkis_password }} groovy = <<EOF
           import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
           import com.cloudbees.plugins.credentials.*
 
@@ -170,7 +167,7 @@
               CredentialsScope.GLOBAL,
               "gcpServiceAccount",
               "GCP Service Account",
-              "/home/{{ vm_user }}/gcp-service-account.json",
+              "/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json",
           )
 
           SystemCredentialsProvider.getInstance().getCredentials().add(creds)

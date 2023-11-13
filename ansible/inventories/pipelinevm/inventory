@@ -1,5 +1,0 @@
-all:
-  hosts:
-    pipelinevm:
-      ansible_host: 192.168.0.101
-      vm_user: patry280111

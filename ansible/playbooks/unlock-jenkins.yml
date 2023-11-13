@@ -1,7 +1,7 @@
 ---
 - name: Unlock Jenkins
-  hosts: "{{ host }}"
-  remote_user: "{{ vm_user }}"
+  hosts: all
+  remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
   become: yes
 
   tasks:
@@ -16,12 +16,12 @@
     - name: Download Jenkins CLI
       get_url:
         url: http://localhost:8085/jnlpJars/jenkins-cli.jar
-        dest: /home/{{ vm_user }}/jenkins-cli.jar
+        dest: /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar
         mode: 0755
 
     - name: Unlock Jenkins
       shell: |
-        echo '{{ admin_password.stdout }}' | java -jar /home/{{ vm_user }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ admin_password.stdout }} groovy = <<EOF
+        echo '{{ admin_password.stdout }}' | java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ admin_password.stdout }} groovy = <<EOF
         import jenkins.model.*
         import hudson.security.*
 

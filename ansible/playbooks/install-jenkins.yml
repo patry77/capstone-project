@@ -5,8 +5,6 @@
   become: yes
 
   tasks:
-    - name: Include encrypted variables
-      include_vars: vault/credentials.yml
     - name: Add Jenkins Repository key
       apt_key:
         url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
