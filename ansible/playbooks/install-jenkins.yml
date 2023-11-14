@@ -31,13 +31,11 @@
         state: present
       when: ansible_os_family == 'Debian'
 
-    - name: Change Jenkins Port
-      blockinfile:
-        path: /etc/systemd/system/jenkins.service.d/override.conf
-        block: |
-          [Service]
-          Environment="JENKINS_PORT={{ jenkins_port }}}"
-        insertafter: EOF
+    - name: Change Jenkins port in systemd service file
+      lineinfile:
+        path: /usr/lib/systemd/system/jenkins.service
+        regexp: '^Environment="JENKINS_PORT='
+        line: 'Environment="JENKINS_PORT=808'
 
     - name: Restart jenkins
       systemd:
