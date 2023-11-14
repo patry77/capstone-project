@@ -88,4 +88,4 @@
         status_code: 201
         headers:
           Content-Type: application/json
-        ignore_errors: true
+      ignore_errors: yes
