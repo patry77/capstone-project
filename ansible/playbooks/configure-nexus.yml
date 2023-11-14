@@ -4,10 +4,19 @@
   remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
   become: yes
   tasks:
-  
+
     - name: Set nexus password
       ansible.builtin.set_fact:
         nexus_password: "{{ lookup('env', 'NEXUS_PASSWORD') }}"
+
+    - name: Wait for Nexus to start
+      uri:
+        url: "http://localhost:8081/service/rest/v1/status"
+        method: GET
+      register: nexus_status
+      until: nexus_status.status == 200
+      retries: 30
+      delay: 10
 
     - name: Get password from docker container
       community.docker.docker_container_exec:

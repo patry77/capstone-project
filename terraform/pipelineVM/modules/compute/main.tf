@@ -22,4 +22,5 @@ resource "google_compute_instance" "ci_cd_vm" {
     metadata = {
     ssh-keys = "ubuntu:${var.ssh_public_key}"
   }
+  tags = ["http-server"]
 }
