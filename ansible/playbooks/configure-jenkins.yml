@@ -11,7 +11,13 @@
         github_login: "{{ lookup('env', 'GH_USERNAME') }}"
         github_key: "{{ lookup('env', 'GH_KEY') }}"
         nexus_password: "{{ lookup('env', 'NEXUS_PASSWORD') }}"
-
+        
+    - name: Wait for Jenkins to start
+      wait_for:
+        host: localhost
+        port: 8085
+        timeout: 300
+         
     - name: Install Jenkins plugins
       community.general.jenkins_plugin:
         name: "{{ item }}"

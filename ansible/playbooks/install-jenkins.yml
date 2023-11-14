@@ -35,11 +35,11 @@
       lineinfile:
         path: /usr/lib/systemd/system/jenkins.service
         regexp: '^Environment="JENKINS_PORT='
-        line: 'Environment="JENKINS_PORT=808'
+        line: 'Environment="JENKINS_PORT=8085"'
 
     - name: Reload systemd
       command: systemctl daemon-reload
-      
+
     - name: Restart jenkins
       systemd:
         name: jenkins
