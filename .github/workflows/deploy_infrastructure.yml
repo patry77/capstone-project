@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  deploy_terraform:
+  deploy_pipeline_terraform:
     runs-on: ubuntu-latest
 
     outputs:
@@ -38,7 +38,7 @@ jobs:
           echo "ip_address=$cleaned_ip" >> "$GITHUB_OUTPUT"
         working-directory: ./terraform/pipelineVM
 
-  deploy_ansible:
+  deploy_pipeline_ansible:
     needs: deploy_terraform
     runs-on: ubuntu-latest
 
@@ -63,10 +63,10 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ needs.deploy_terraform.outputs.ip_address }}
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ needs.deploy_pipeline_terraform.outputs.ip_address }}
 
       - name: Ansible - Configure VM
-        run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
         env:
           gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           ANSIBLE_HOST_KEY_CHECKING: false
@@ -113,3 +113,27 @@ jobs:
           GH_USERNAME: ${{ secrets.GH_LOGIN }}
           GH_KEY: ${{ secrets.GH_KEY }}
         working-directory: ./ansible
+
+  deploy_loadBalancer:
+    needs: deploy_ansible
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+          terraform_wrapper: false
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+        working-directory: ./terraform/loadBalancer
+
+      - name: Deploy Infrastructure
+        run: terraform apply -auto-approve
+        working-directory: ./terraform/loadBalancer
+        env:
+          TF_VAR_image: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test
+          TF_VAR_insecure_host: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082
