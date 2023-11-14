@@ -24,11 +24,12 @@
         command: cat /nexus-data/admin.password
         detach: no
       register: exec_result
+      ignore_errors: yes
 
     - name: Capture Admin Password
       set_fact:
         admin_password: "{{ exec_result.stdout }}"
-
+      ignore_errors: yes
 
     - name: Change Nexus admin password
       uri:
@@ -42,6 +43,7 @@
           Content-Type: 'text/plain'
         body: '{{ nexus_password }}'
         status_code: 204
+      ignore_errors: yes
 
     - debug:
         var: result
