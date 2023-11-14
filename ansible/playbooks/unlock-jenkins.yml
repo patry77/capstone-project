@@ -9,9 +9,13 @@
       ansible.builtin.set_fact:
         jenkis_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
 
-    - name: Include encrypted variables
-      include_vars: vault/credentials.yml
-      
+    - name: Wait for Jenkins to start
+      wait_for:
+        host: localhost
+        port: 8085
+        timeout: 300
+         
+
     - name: Copy initial admin password
       command: cat /var/lib/jenkins/secrets/initialAdminPassword
       register: admin_password
