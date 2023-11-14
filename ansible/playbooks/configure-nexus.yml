@@ -4,6 +4,10 @@
   remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
   become: yes
   tasks:
+  
+    - name: Set nexus password
+      ansible.builtin.set_fact:
+        nexus_password: "{{ lookup('env', 'NEXUS_PASSWORD') }}"
 
     - name: Get password from docker container
       community.docker.docker_container_exec:

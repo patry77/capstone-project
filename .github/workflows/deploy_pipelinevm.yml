@@ -109,6 +109,6 @@ jobs:
           JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          GITHUB_USERNAME: ${{ secrets.GH_LOGIN }}
-          GITHUB_KEY: ${{ secrets.GH_KEY }}
+          GH_USERNAME: ${{ secrets.GH_LOGIN }}
+          GH_KEY: ${{ secrets.GH_KEY }}
         working-directory: ./ansible

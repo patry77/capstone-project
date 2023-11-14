@@ -50,12 +50,16 @@
 
       - name: Install Google Cloud CLI using Snap
         command: snap install google-cloud-sdk --classic
+        ignore_errors: yes
+        when: ansible_os_family == "Debian"
 
       - name: Set GCP Service Account Key
         ansible.builtin.set_fact:
           gcp_service_account_key: "{{ lookup('env', 'gcp_service_account_key') }}"
+        when: ansible_os_family == "Debian"
 
       - name: Copy GCP service account file
         copy:
           content: "{{ gcp_service_account_key }}"
           dest: /home/ubuntu/gcp-service-account.json
+        when: ansible_os_family == "Debian"

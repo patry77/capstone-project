@@ -5,6 +5,13 @@
   become: yes
 
   tasks:
+    - name: Set Jenkins password, github login and key, nexus password
+      ansible.builtin.set_fact:
+        jenkins_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
+        github_login: "{{ lookup('env', 'GH_USERNAME') }}"
+        github_key: "{{ lookup('env', 'GH_KEY') }}"
+        nexus_password: "{{ lookup('env', 'NEXUS_PASSWORD') }}"
+
     - name: Install Jenkins plugins
       community.general.jenkins_plugin:
         name: "{{ item }}"

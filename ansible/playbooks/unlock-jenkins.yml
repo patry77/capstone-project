@@ -5,6 +5,10 @@
   become: yes
 
   tasks:
+    - name: Set Jenkins password
+      ansible.builtin.set_fact:
+        jenkis_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
+
     - name: Include encrypted variables
       include_vars: vault/credentials.yml
       
