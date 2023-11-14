@@ -39,7 +39,7 @@ jobs:
         working-directory: ./terraform/pipelineVM
 
   deploy_pipeline_ansible:
-    needs: deploy_terraform
+    needs: deploy_pipeline_terraform
     runs-on: ubuntu-latest
 
     env:
@@ -115,7 +115,7 @@ jobs:
         working-directory: ./ansible
 
   deploy_loadBalancer:
-    needs: deploy_ansible
+    needs: deploy_pipeline_ansible
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
