@@ -5,6 +5,10 @@
   become: yes
 
   tasks:
+    - name: Set jenkins port
+      ansible.builtin.set_fact:
+        jenkins_port: "{{ lookup('env', 'JENKINS_PORT') }}"
+
     - name: Add Jenkins Repository key
       apt_key:
         url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key

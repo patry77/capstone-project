@@ -90,6 +90,7 @@ jobs:
         run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/install-jenkins.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
+          JENKINS_PORT: 8085
         working-directory: ./ansible
       
       - name: Ansible - Unlock Jenkins
