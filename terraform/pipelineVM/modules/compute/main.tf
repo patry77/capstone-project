@@ -13,6 +13,7 @@ resource "google_compute_instance" "ci_cd_vm" {
     }
   }
 
+
   network_interface {
     network = "default"
     access_config {
