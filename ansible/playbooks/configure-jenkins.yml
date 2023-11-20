@@ -114,6 +114,7 @@
       service:
         name: jenkins
         state: restarted
+        
 
     - name: Configure Jenkins Job with Jenkinsfile
       shell: |
