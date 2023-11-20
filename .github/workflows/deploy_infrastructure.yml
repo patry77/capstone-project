@@ -1,4 +1,4 @@
-name: Pipeline VM Deployment
+name: Infrastructure Deployment
 
 on:
   push:
@@ -114,7 +114,7 @@ jobs:
           GH_KEY: ${{ secrets.GH_KEY }}
         working-directory: ./ansible
 
-      - name: Ansible - Unlock Jenkins
+      - name: Ansible - Configure jenkins webhook
         run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-jenkins-webhook.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: false

@@ -2,12 +2,15 @@
 - name: Generate Jenkins API Token
   hosts: localhost
   gather_facts: false
-  vars:
-    jenkins_url: "http://localhost:8085"
-    jenkins_user: "admin"
-    jenkins_password: "{{ lookup('env', 'JENKINS_PASSWORD') }"
+
 
   tasks:
+    - name: Set Jenkins password
+      ansible.builtin.set_fact:
+        jenkis_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
+        jenkins_user: "admin"
+        jenkins_url: "http://localhost:8085"
+
     - name: Get Jenkins Crumb
       uri:
         url: "{{ jenkins_url }}/crumbIssuer/api/json"
@@ -20,7 +23,7 @@
 
     - name: Generate Jenkins API Token
       uri:
-        url: "{{ jenkins_url }}/user/{{ jenkins_user_to_generate_token }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
+        url: "{{ jenkins_url }}/user/{{ jenkins_user }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
         method: POST
         user: "{{ jenkins_user }}"
         password: "{{ jenkins_password }}"
