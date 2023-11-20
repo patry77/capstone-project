@@ -12,6 +12,12 @@
         github_key: "{{ lookup('env', 'GH_KEY') }}"
         nexus_password: "{{ lookup('env', 'NEXUS_PASSWORD') }}"
 
+    - name: Add Jenkins user to Docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
     - name: Wait for Jenkins to start
       wait_for:
         host: localhost

@@ -56,7 +56,7 @@
 
     - name: Trigger Jenkins job
       uri:
-        url: "http://{{ webhook_url }}:8085/job/spring-petclinic"
+        url: "http://localhost:8085/job/spring-petclinic"
         method: POST
         user: admin
         password: "{{ jenkins_password }}"
@@ -64,16 +64,14 @@
         status_code: 201
       async: 60
       poll: 0
-      register: job_response
 
     - name: Get job status
-      uri:
-        url: "http://your-jenkins-server/job/spring-petclinic/lastBuild/api/json"
-        method: GET
+      community.general.jenkins_job_info:
+        name: spring-petclinic
+        url: "http://localhost:8085"
         user: admin
         password: "{{ jenkins_password }}"
-        force_basic_auth: yes
-      register: job_status
-      until: job_status.json.result == "SUCCESS" or job_status.json.result == "FAILURE"
-      retries: 60
+      register: job_info
+      until: job_info.status == "SUCCESS"
+      retries: 20
       delay: 10
