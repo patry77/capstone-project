@@ -66,12 +66,12 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ needs.deploy_pipeline_terraform.outputs.ip_address }}
 
-      - name: Ansible - Configure VM
-        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
-        env:
-          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-          ANSIBLE_HOST_KEY_CHECKING: false
-        working-directory: ./ansible
+      # - name: Ansible - Configure VM
+      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
+      #   env:
+      #     gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      #     ANSIBLE_HOST_KEY_CHECKING: false
+      #   working-directory: ./ansible
       
       - name: Ansible - Install Nexus
         run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-nexus.yml
