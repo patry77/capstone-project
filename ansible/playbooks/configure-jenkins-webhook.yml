@@ -1,6 +1,7 @@
 ---
 - name: Generate Jenkins API Token
   hosts: all
+  remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
   gather_facts: false
 
 

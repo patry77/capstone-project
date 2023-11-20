@@ -31,7 +31,7 @@ resource "google_compute_instance_template" "vm_instance" {
   labels = {
     container-vm = module.gce-container.vm_container_label
   }
-  metadata_startup_script = file("./modules/compute/startup.sh")
+  metadata_startup_script = templatefile("./modules/compute/startup.sh", {insecure_host=var.insecure_host})
 }
 
 resource "google_compute_instance_group_manager" "instance_group_manager" {
