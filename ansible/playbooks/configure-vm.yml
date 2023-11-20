@@ -35,6 +35,10 @@
         pip:
           name: docker
 
+      - name: Install python-github
+        pip:
+          name: github
+
       - name: Install Snapd
         apt:
           name: snapd
@@ -47,6 +51,7 @@
           state: started
           enabled: yes
         when: ansible_os_family == "Debian"
+
 
       - name: Install Google Cloud CLI using Snap
         command: snap install google-cloud-sdk --classic
