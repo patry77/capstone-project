@@ -58,16 +58,21 @@
         url: "http://{{ webhook_url }}:8085/job/spring-petclinic"
         method: POST
         user: admin
-        password: jenkins_password
+        password: "{{ jenkins_password }}"
         force_basic_auth: yes
+        status_code: 201
       async: 60
       poll: 0
       register: job_response
 
-    - name: Wait for job completion
-      async_status:
-        jid: "{{ job_response.json.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
+    - name: Get job status
+      uri:
+        url: "http://your-jenkins-server/job/spring-petclinic/lastBuild/api/json"
+        method: GET
+        user: admin
+        password: "{{ jenkins_password }}"
+        force_basic_auth: yes
+      register: job_status
+      until: job_status.json.result == "SUCCESS" or job_status.json.result == "FAILURE"
       retries: 60
       delay: 10

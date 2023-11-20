@@ -115,7 +115,7 @@
         name: jenkins
         state: restarted
 
-        
+
 
     - name: Configure Jenkins Job with Jenkinsfile
       shell: |
@@ -181,13 +181,17 @@
       shell: |
           java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkins_password }} groovy = <<EOF
           import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
+          import org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl;
           import com.cloudbees.plugins.credentials.*
+          Path fileLocation = Paths.get("/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json");
 
+          def secretBytes = SecretBytes.fromBytes(Files.readAllBytes(fileLocation))
           def creds = new FileCredentialsImpl(
               CredentialsScope.GLOBAL,
               "gcpServiceAccount",
               "GCP Service Account",
-              "/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json",
+              "gcp-service-account.json",
+              "secretBytes",
           )
 
           SystemCredentialsProvider.getInstance().getCredentials().add(creds)
