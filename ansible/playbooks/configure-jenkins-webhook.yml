@@ -53,6 +53,7 @@
         user: "patry77"
         token: "{{ github_token }}"
 
+
     - name: Trigger Jenkins job
       uri:
         url: "http://{{ webhook_url }}:8085/job/spring-petclinic"
