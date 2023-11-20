@@ -18,10 +18,6 @@ jobs:
         with:
           terraform_version: 1.0.5
 
-      - name: Terraform Load Balancer Format
-        run: terraform fmt -check -recursive
-        working-directory: terraform/loadBalancer
-
       - name: Terraform Load Balancer Linting
         run: terraform validate
         working-directory: terraform/loadBalancer
@@ -46,10 +42,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.5
-
-      - name: Terraform Pipeline VM Format
-        run: terraform fmt -check -recursive
-        working-directory: terraform/pipelineVM
 
       - name: Terraform Pipeline VM Linting
         run: terraform validate

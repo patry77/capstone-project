@@ -14,13 +14,13 @@
 
     - name: Get Jenkins Crumb
       uri:
-        url: "{{ jenkins_url }}/crumbIssuer/api/json"
+        url: "{{ jenkins_url }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)"
         method: GET
         user: "{{ jenkins_user }}"
         password: "{{ jenkins_password }}"
-        status_code: 200
+        force_basic_auth: true
         return_content: true
-      register: crumb_result
+      register: crumb
 
     - name: Generate Jenkins API Token
       uri:
@@ -31,8 +31,7 @@
         body_format: json
         headers:
           Content-Type: "application/x-www-form-urlencoded"
-          Jenkins-Crumb: "{{ crumb_result.json.crumb }}"
-        status_code: 200
+          Jenkins-Crumb: "{{ crumb.content.split(':')[1]}}"
         return_content: true
       register: token_result
 
