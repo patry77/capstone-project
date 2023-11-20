@@ -26,12 +26,14 @@
       uri:
         url: "{{ jenkins_url }}/user/{{ jenkins_user }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
         method: POST
+        follow_redirects: all
         force_basic_auth: true
         user: "{{ jenkins_user }}"
         password: "{{ jenkins_password }}"
         body_format: json
         headers:
           Content-Type: "application/x-www-form-urlencoded"
+          Cookie: '{{ crumb.set_cookie }}'
           Jenkins-Crumb: "{{ crumb.content.split(':')[1]}}"
         return_content: true
       register: token_result
