@@ -25,9 +25,9 @@ jobs:
         run: terraform init -input=false
         working-directory: ./terraform/pipelineVM
 
-      # - name: Deploy Infrastructure
-      #   run: terraform apply -auto-approve
-      #   working-directory: ./terraform/pipelineVM
+      - name: Deploy Infrastructure
+        run: terraform apply -auto-approve
+        working-directory: ./terraform/pipelineVM
 
       - name: Get Outputs
         id: getip
@@ -66,54 +66,54 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ needs.deploy_pipeline_terraform.outputs.ip_address }}
 
-      # - name: Ansible - Configure VM
-      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
-      #   env:
-      #     gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-      #     ANSIBLE_HOST_KEY_CHECKING: false
-      #   working-directory: ./ansible
+      - name: Ansible - Configure VM
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-vm.yml
+        env:
+          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          ANSIBLE_HOST_KEY_CHECKING: false
+        working-directory: ./ansible
       
-      # - name: Ansible - Install Nexus
-      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-nexus.yml
-      #   env:
-      #     ANSIBLE_HOST_KEY_CHECKING: false
-      #   working-directory: ./ansible
+      - name: Ansible - Install Nexus
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-nexus.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+        working-directory: ./ansible
       
-      # - name: Ansible - Configure Nexus
-      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-nexus.yml
-      #   env:
-      #     ANSIBLE_HOST_KEY_CHECKING: false
-      #     NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      #     NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      #   working-directory: ./ansible
+      - name: Ansible - Configure Nexus
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-nexus.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        working-directory: ./ansible
       
-      # - name: Ansible - Install Jenkins
-      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-jenkins.yml
-      #   env:
-      #     ANSIBLE_HOST_KEY_CHECKING: false
-      #     JENKINS_PORT: 8085
-      #   working-directory: ./ansible
+      - name: Ansible - Install Jenkins
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-jenkins.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+          JENKINS_PORT: 8085
+        working-directory: ./ansible
       
-      # - name: Ansible - Unlock Jenkins
-      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/unlock-jenkins.yml
-      #   env:
-      #     ANSIBLE_HOST_KEY_CHECKING: false
-      #     JENKINS_USERNAME: ${{ secrets.JENKINS_USERNAME }}
-      #     JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
-      #   working-directory: ./ansible
+      - name: Ansible - Unlock Jenkins
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/unlock-jenkins.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: false
+          JENKINS_USERNAME: ${{ secrets.JENKINS_USERNAME }}
+          JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
+        working-directory: ./ansible
       
-      # - name: Ansible - Configure Jenkins
-      #   run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-jenkins.yml
-      #   env:
-      #     gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-      #     ANSIBLE_HOST_KEY_CHECKING: false
-      #     JENKINS_USERNAME: ${{ secrets.JENKINS_USERNAME }}
-      #     JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
-      #     NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      #     NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      #     GH_USERNAME: ${{ secrets.GH_LOGIN }}
-      #     GH_KEY: ${{ secrets.GH_KEY }}
-      #   working-directory: ./ansible
+      - name: Ansible - Configure Jenkins
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-jenkins.yml
+        env:
+          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          ANSIBLE_HOST_KEY_CHECKING: false
+          JENKINS_USERNAME: ${{ secrets.JENKINS_USERNAME }}
+          JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          GH_USERNAME: ${{ secrets.GH_LOGIN }}
+          GH_KEY: ${{ secrets.GH_KEY }}
+        working-directory: ./ansible
 
       - name: Ansible - Configure jenkins webhook
         run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-jenkins-webhook.yml
@@ -125,26 +125,26 @@ jobs:
           WEBHOOK_URL: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}
         working-directory: ./ansible
 
-  # deploy_loadBalancer:
-  #   needs: deploy_pipeline_ansible
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  deploy_loadBalancer:
+    needs: deploy_pipeline_ansible
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v1
-  #       with:
-  #         cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
-  #         terraform_wrapper: false
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+          terraform_wrapper: false
 
-  #     - name: Initialize Terraform
-  #       run: terraform init -input=false
-  #       working-directory: ./terraform/loadBalancer
+      - name: Initialize Terraform
+        run: terraform init -input=false
+        working-directory: ./terraform/loadBalancer
 
-  #     - name: Deploy Infrastructure
-  #       run: terraform apply -auto-approve
-  #       working-directory: ./terraform/loadBalancer
-  #       env:
-  #         TF_VAR_image: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test
-  #         TF_VAR_insecure_host: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082
+      - name: Deploy Infrastructure
+        run: terraform apply -auto-approve
+        working-directory: ./terraform/loadBalancer
+        env:
+          TF_VAR_image: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test
+          TF_VAR_insecure_host: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082

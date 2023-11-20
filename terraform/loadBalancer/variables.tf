@@ -131,7 +131,6 @@ variable "group_manager_size" {
 variable "image" {
   description = "Image of the VM"
   type        = string
-  default     = "ubuntu-os-cloud/ubuntu-1804-lts"
 }
 
 variable "activate_tty" {
@@ -143,5 +142,4 @@ variable "activate_tty" {
 variable "insecure_host" {
   description = "Insecure host"
   type        = string
-  default     = "gcr.io"
 }

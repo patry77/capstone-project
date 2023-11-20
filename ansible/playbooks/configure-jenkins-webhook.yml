@@ -45,11 +45,29 @@
     - name: Create a new webhook in a github
       community.general.github_webhook:
         repository: patry77/spring-petclinic
-        url: "http://{{ webhook_url }}/github-webhook/"
+        url: "http://{{ webhook_url }}:8085/github-webhook/"
         content_type: json
-        secret: "{{ token_result.json.data.tokenValue }}"
         insecure_ssl: true
         events:
           - push
         user: "patry77"
         token: "{{ github_token }}"
+
+    - name: Trigger Jenkins job
+      uri:
+        url: "http://{{ webhook_url }}:8085/job/spring-petclinic"
+        method: POST
+        user: admin
+        password: jenkins_password
+        force_basic_auth: yes
+      async: 60
+      poll: 0
+      register: job_response
+
+    - name: Wait for job completion
+      async_status:
+        jid: "{{ job_response.json.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 60
+      delay: 10
