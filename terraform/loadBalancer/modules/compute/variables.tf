@@ -47,8 +47,3 @@ variable "insecure_host" {
   type        = string
 
 }
-
-variable "path_to_startup_script" {
-  description = "Path to startup script"
-  type        = string
-}
