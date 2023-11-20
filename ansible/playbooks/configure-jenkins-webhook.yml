@@ -26,6 +26,7 @@
       uri:
         url: "{{ jenkins_url }}/user/{{ jenkins_user }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
         method: POST
+        force_basic_auth: true
         user: "{{ jenkins_user }}"
         password: "{{ jenkins_password }}"
         body_format: json
