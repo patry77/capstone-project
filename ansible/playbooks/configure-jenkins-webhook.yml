@@ -41,23 +41,14 @@
       register: token_result
 
 
-    - name: Add GitHub Webhook
-      uri:
-        url: "https://api.github.com/repos/patry77/spring-petclinic/hooks"
-        method: POST
-        headers:
-          Accept: "application/vnd.github+json"
-          Authorization: "Bearer {{ github_token }}"
-        body_format: json
-        body:
-          name: "Jenkins pipeline"
-          active: true
-          events:
-            - "push"
-          config:
-            url: "http://{{ webhook_url }}/github-webhook/"
-            content_type: "json"
-            insecure_ssl: "1"
-            secret: "{{ token_result.json.data.tokenValue }}"
-        status_code: 201
-      register: result
+    - name: Create a new webhook in a github
+      community.general.github_webhook:
+        repository: patry77/spring-petclinic
+        url: "http://{{ webhook_url }}/github-webhook/"
+        content_type: json
+        secret: "{{ token_result.json.data.tokenValue }}"
+        insecure_ssl: true
+        events:
+          - push
+        user: "patry77"
+        token: "{{ github_user_api_token }}"
