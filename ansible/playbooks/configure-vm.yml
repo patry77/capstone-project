@@ -37,7 +37,7 @@
 
       - name: Install python-github
         pip:
-          name: github
+          name: pygithub
 
       - name: Install Snapd
         apt:
