@@ -39,8 +39,10 @@
           Jenkins-Crumb: "{{ crumb.content.split(':')[1]}}"
         return_content: true
       register: token_result
-
-
+    
+    - name: Set Jenkins API Token env variables
+      environment: 
+        JENKINS_TOKEN: "{{token_result.json.data.tokenValue}}"
 
     - name: Create a new webhook in a github
       community.general.github_webhook:
@@ -54,24 +56,3 @@
         token: "{{ github_token }}"
 
 
-    - name: Trigger Jenkins job
-      uri:
-        url: "http://localhost:8085/job/spring-petclinic"
-        method: POST
-        user: admin
-        password: "{{ jenkins_password }}"
-        force_basic_auth: yes
-        status_code: 201
-      async: 60
-      poll: 0
-
-    - name: Get job status
-      community.general.jenkins_job_info:
-        name: spring-petclinic
-        url: "http://localhost:8085"
-        user: admin
-        password: "{{ jenkins_password }}"
-      register: job_info
-      until: job_info.status == "SUCCESS"
-      retries: 20
-      delay: 10
