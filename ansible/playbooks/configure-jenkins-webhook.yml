@@ -6,11 +6,13 @@
 
 
   tasks:
-    - name: Set Jenkins password
+    - name: Set environmental variables
       ansible.builtin.set_fact:
         jenkins_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
         jenkins_user: "admin"
         jenkins_url: "http://localhost:8085"
+        github_token: "{{ lookup('env', 'GH_KEY') }}"
+        webhook_url: "{{ lookup('env', 'WEBHOOK_URL') }}"
 
     - name: Get Jenkins Crumb
       uri:
@@ -38,5 +40,24 @@
         return_content: true
       register: token_result
 
-    - debug:
-        var: token_result.json.data.tokenValue
+
+    - name: Add GitHub Webhook
+      uri:
+        url: "https://api.github.com/repos/patry77/spring-petclinic/hooks"
+        method: POST
+        headers:
+          Accept: "application/vnd.github+json"
+          Authorization: "Bearer {{ github_token }}"
+        body_format: json
+        body:
+          name: "Jenkins pipeline"
+          active: true
+          events:
+            - "push"
+          config:
+            url: "http://{{ webhook_url }}/github-webhook/"
+            content_type: "json"
+            insecure_ssl: "1"
+            secret: "{{ token_result.json.data.tokenValue }}"
+        status_code: 201
+      register: result

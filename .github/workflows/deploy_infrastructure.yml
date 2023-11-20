@@ -120,6 +120,8 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: false
           JENKINS_USERNAME: ${{ secrets.JENKINS_USERNAME }}
           JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
+          GH_KEY: ${{ secrets.GH_KEY }}
+          WEBHOOK_URL: ${{ needs.deploy_pipeline_terraform.outputs.ip_address }}
         working-directory: ./ansible
 
   # deploy_loadBalancer:
