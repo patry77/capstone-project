@@ -39,4 +39,4 @@
       register: token_result
 
     - debug:
-        var: token_result
+        var: token_result.json.data.tokenValue
