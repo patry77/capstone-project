@@ -1,0 +1,36 @@
+---
+- name: Generate Jenkins API Token
+  hosts: localhost
+  gather_facts: false
+  vars:
+    jenkins_url: "http://localhost:8085"
+    jenkins_user: "admin"
+    jenkins_password: "{{ lookup('env', 'JENKINS_PASSWORD') }"
+
+  tasks:
+    - name: Get Jenkins Crumb
+      uri:
+        url: "{{ jenkins_url }}/crumbIssuer/api/json"
+        method: GET
+        user: "{{ jenkins_user }}"
+        password: "{{ jenkins_password }}"
+        status_code: 200
+        return_content: true
+      register: crumb_result
+
+    - name: Generate Jenkins API Token
+      uri:
+        url: "{{ jenkins_url }}/user/{{ jenkins_user_to_generate_token }}/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken"
+        method: POST
+        user: "{{ jenkins_user }}"
+        password: "{{ jenkins_password }}"
+        body_format: json
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+          Jenkins-Crumb: "{{ crumb_result.json.crumb }}"
+        status_code: 200
+        return_content: true
+      register: token_result
+
+    - debug:
+        var: token_result.json.tokenValue
