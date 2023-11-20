@@ -1,6 +1,6 @@
 #/bin/bash
 
-docker_registry_ip=$1
+docker_registry_ip=$TF_VAR_insecure_host
 
 
 echo '{

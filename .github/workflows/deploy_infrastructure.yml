@@ -73,13 +73,13 @@ jobs:
         working-directory: ./ansible
       
       - name: Ansible - Install Nexus
-        run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/install-nexus.yml
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-nexus.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
         working-directory: ./ansible
       
       - name: Ansible - Configure Nexus
-        run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/configure-nexus.yml
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-nexus.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -87,14 +87,14 @@ jobs:
         working-directory: ./ansible
       
       - name: Ansible - Install Jenkins
-        run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/install-jenkins.yml
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/install-jenkins.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
           JENKINS_PORT: 8085
         working-directory: ./ansible
       
       - name: Ansible - Unlock Jenkins
-        run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/unlock-jenkins.yml
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/unlock-jenkins.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
           JENKINS_USERNAME: ${{ secrets.JENKINS_USERNAME }}
@@ -102,7 +102,7 @@ jobs:
         working-directory: ./ansible
       
       - name: Ansible - Configure Jenkins
-        run: ansible-playbook -i "${{ needs.deploy_terraform.outputs.ip_address }}," ./playbooks/configure-jenkins.yml
+        run: ansible-playbook -i "${{ needs.deploy_pipeline_terraform.outputs.ip_address }}," ./playbooks/configure-jenkins.yml
         env:
           gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           ANSIBLE_HOST_KEY_CHECKING: false

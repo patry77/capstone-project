@@ -51,5 +51,4 @@ variable "insecure_host" {
 variable "path_to_startup_script" {
   description = "Path to startup script"
   type        = string
-  default = "C:\\Users\\patry\\Desktop\\my-repos\\capstone-project\\terraform\\loadBalancer\\modules\\compute\\startup-script.sh"
 }
