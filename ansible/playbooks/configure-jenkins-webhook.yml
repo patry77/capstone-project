@@ -51,4 +51,4 @@
         events:
           - push
         user: "patry77"
-        token: "{{ github_user_api_token }}"
+        token: "{{ github_token: }}"
