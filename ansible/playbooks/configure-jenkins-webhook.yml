@@ -7,7 +7,7 @@
   tasks:
     - name: Set Jenkins password
       ansible.builtin.set_fact:
-        jenkis_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
+        jenkins_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
         jenkins_user: "admin"
         jenkins_url: "http://localhost:8085"
 
