@@ -32,11 +32,11 @@
         password: "{{ jenkins_password }}"
         body_format: json
         headers:
-          Content-Type: "application/x-www-form-urlencoded"
+          Content-Type: "application/json"
           Cookie: '{{ crumb.set_cookie }}'
           Jenkins-Crumb: "{{ crumb.content.split(':')[1]}}"
         return_content: true
       register: token_result
 
     - debug:
-        var: token_result.json.tokenValue
+        var: token_result
