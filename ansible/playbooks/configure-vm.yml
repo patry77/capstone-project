@@ -34,10 +34,12 @@
       - name: Install python-docker
         pip:
           name: docker
+        ignore_errors: yes
 
       - name: Install python-github
         pip:
           name: pygithub
+        ignore_errors: yes
 
       - name: Install Snapd
         apt:
