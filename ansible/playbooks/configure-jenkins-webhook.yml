@@ -43,9 +43,8 @@
     - name: Set Jenkins API Token env variables
       set_fact: 
         JENKINS_TOKEN: "{{token_result.json.data.tokenValue}}"
-
-    - name: Export environment variable
-      command: export JENKINS_TOKEN="{{ JENKINS_TOKEN }}"
+      debug:
+        var: JENKINS_TOKEN
 
     - name: Create a new webhook in a github
       community.general.github_webhook:
