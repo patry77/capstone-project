@@ -143,6 +143,12 @@ jobs:
         run: terraform init -input=false
         working-directory: ./terraform/loadBalancer
 
+      - name: Create auto.tfvars
+        run: |
+          echo "image = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test\"" > ./variables.auto.tfvars
+          echo "insecure_host = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}\"" >> ./variables.auto.tfvars
+        working-directory: ./terraform/loadBalancer
+        
       - name: Deploy Infrastructure
-        run: terraform apply -auto-approve -var "image=${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test" -var "insecure_host=${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082"
+        run: terraform apply -auto-approve
         working-directory: ./terraform/loadBalancer
