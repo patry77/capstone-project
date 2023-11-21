@@ -6,7 +6,7 @@ module "gce-container" {
     image = var.image
     env = [
       {
-        spring.profiles.active="mysql"
+        "spring.profiles.active"="mysql"
       }
     ],
     securityContext = {
