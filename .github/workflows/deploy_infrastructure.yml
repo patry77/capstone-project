@@ -127,7 +127,7 @@ jobs:
 
 
   deploy_loadBalancer:
-    needs: deploy_pipeline_ansible
+    # needs: deploy_pipeline_ansible
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
