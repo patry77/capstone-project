@@ -144,5 +144,5 @@ jobs:
         working-directory: ./terraform/loadBalancer
 
       - name: Deploy Infrastructure
-        run: terraform apply -auto-approve -var "image=${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test" -var "insecure_host=${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082
+        run: terraform apply -auto-approve -var "image=${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test" -var "insecure_host=${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082"
         working-directory: ./terraform/loadBalancer
