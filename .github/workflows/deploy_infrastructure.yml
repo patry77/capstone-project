@@ -147,7 +147,7 @@ jobs:
       - name: Create auto.tfvars
         run: |
           echo "image = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test\"" > ./variables.auto.tfvars
-          echo "insecure_host = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082\"" >> ./variables.auto.tfvars
+          echo "insecure_host = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}\"" >> ./variables.auto.tfvars
         working-directory: ./terraform/loadBalancer
         
       - name: Deploy Infrastructure
