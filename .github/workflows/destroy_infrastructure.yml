@@ -1,0 +1,46 @@
+name: Infrastructure Deployment
+
+
+on: workflow_dispatch
+
+jobs:
+  destroy_pipeline_terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+    
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+          terraform_wrapper: false
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+        working-directory: ./terraform/pipelineVM
+    
+      - name: Destroy Pipeline VM
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform/pipelineVM
+
+  destroy_loadBalancer:
+    needs: destroy_pipeline_terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+          terraform_wrapper: false
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+        working-directory: ./terraform/loadBalancer
+        
+      - name: Deploy Infrastructure
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform/loadBalancer
