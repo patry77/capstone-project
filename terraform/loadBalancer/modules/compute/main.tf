@@ -4,11 +4,12 @@ module "gce-container" {
 
   container = {
     image = var.image
-    # env = [
-    #   {
-    #     "spring.profiles.active"="mysql"
-    #   }
-    # ],
+    env = [
+      {
+        name = "spring.profiles.active"
+        value = "mysql"
+      }
+    ],
     securityContext = {
       privileged : true
     }
