@@ -3,6 +3,7 @@ name: Infrastructure Destroy
 
 on: workflow_dispatch
 
+
 jobs:
   destroy_pipeline_terraform:
     runs-on: ubuntu-latest
