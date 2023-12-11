@@ -47,3 +47,21 @@ variable "insecure_host" {
   type        = string
 
 }
+
+variable "mysql_url" {
+  description = "Mysql url"
+  type        = string
+
+}
+
+variable "mysql_user" {
+  description = "Mysql user"
+  type        = string
+
+}
+
+variable "mysql_password" {
+  description = "Mysql password"
+  type        = string
+
+}

@@ -6,8 +6,20 @@ module "gce-container" {
     image = var.image
     env = [
       {
-        name = "spring.profiles.active"
+        name  = "spring.profiles.active"
         value = "mysql"
+      },
+      {
+        name  = "MYSQL_URL"
+        value = var.mysql_url
+      },
+      {
+        name  = "MYSQL_USER"
+        value = var.mysql_user
+      },
+      {
+        name  = "MYSQL_PASSWORD"
+        value = var.mysql_password
       }
     ],
     securityContext = {
@@ -37,7 +49,7 @@ resource "google_compute_instance_template" "vm_instance" {
   labels = {
     container-vm = module.gce-container.vm_container_label
   }
-  metadata_startup_script = templatefile("./modules/compute/startup.sh", {insecure_host=var.insecure_host})
+  metadata_startup_script = templatefile("./modules/compute/startup.sh", { insecure_host = var.insecure_host })
 }
 
 resource "google_compute_instance_group_manager" "instance_group_manager" {

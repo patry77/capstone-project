@@ -31,4 +31,15 @@ module "compute" {
   image                = var.image
   activate_tty         = var.activate_tty
   insecure_host        = var.insecure_host
+  mysql_url            = var.mysql_url
+  mysql_user           = var.mysql_user
+  mysql_password       = var.mysql_password
+}
+
+module "database" {
+  source         = "./modules/database"
+  database_name  = var.database_name
+  region         = var.region
+  mysql_user     = var.mysql_user
+  mysql_password = var.mysql_password
 }

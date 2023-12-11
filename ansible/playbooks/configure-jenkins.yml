@@ -188,22 +188,16 @@
           java -jar /home/{{ lookup('env', 'REMOTE_USER') }}/jenkins-cli.jar -s http://localhost:8085/ -auth admin:{{ jenkins_password }} groovy = <<EOF
           import jenkins.model.*
           import com.cloudbees.plugins.credentials.*
-          import com.cloudbees.plugins.credentials.common.*
           import com.cloudbees.plugins.credentials.domains.*
+          import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
           import org.jenkinsci.plugins.plaincredentials.impl.*
 
-          def secretFilePath = '/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json'
-          def secretContent = new File(secretFilePath).text
-          def creds = new FileCredentialsImpl(
-              CredentialsScope.GLOBAL,
-              "gcpServiceAccount",
-              "GCP Service Account",
-              new SecretBytes(Base64.getEncoder().encode(secretContent.bytes)),
-              null,
-              null
-          )
+          File secretFile = new File('/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json')
+          SecretBytes secretBytes = SecretBytes.fromBytes(secretFile.bytes)
+          FileCredentials fileCredentials = new SecretBytesCredentialsImpl(CredentialsScope.GLOBAL, 'GCLOUD_CREDS', 'GCP Service Account', secretBytes)
 
-          SystemCredentialsProvider.getInstance().getCredentials().add(creds)
-          SystemCredentialsProvider.getInstance().save()
+          CredentialsStore store = Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+
+          store.addCredentials(Domain.global(), fileCredentials)
           EOF
       ignore_errors: yes

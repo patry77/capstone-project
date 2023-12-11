@@ -9,7 +9,7 @@ resource "google_compute_instance" "ci_cd_vm" {
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2004-lts"
-      size = 20
+      size  = 20
     }
   }
 
@@ -20,7 +20,7 @@ resource "google_compute_instance" "ci_cd_vm" {
       nat_ip = google_compute_address.static_ip.address
     }
   }
-    metadata = {
+  metadata = {
     ssh-keys = "ubuntu:${var.ssh_public_key}"
   }
   tags = ["http-server"]

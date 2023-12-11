@@ -143,3 +143,35 @@ variable "insecure_host" {
   description = "Insecure host"
   type        = string
 }
+
+variable "mysql_url" {
+  description = "Mysql url"
+  type        = string
+}
+
+variable "mysql_user" {
+  description = "Mysql user"
+  type        = string
+}
+
+variable "mysql_password" {
+  description = "Mysql password"
+  type        = string
+}
+
+#Database
+variable "database_name" {
+  description = "Name of the database"
+  type        = string
+}
+
+variable "username" {
+  description = "Username for the database"
+  type        = string
+}
+
+variable "password" {
+  description = "Password for the database"
+  type        = string
+}
+
