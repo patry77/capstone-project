@@ -41,7 +41,7 @@ jobs:
           terraform output -raw vm_public_ip
           db_ip=$(terraform output -raw db_instance_ip)
           cleaned_ip=$(echo "${tf_ip}" | awk -F: '{print $1}')
-          echo "db_address=$cleaned_ip" >> "$GITHUB_OUTPUT"
+          echo "db_address=$db_ip" >> "$GITHUB_OUTPUT"
         working-directory: ./terraform/pipelineVM
 
   deploy_pipeline_ansible:
@@ -133,7 +133,7 @@ jobs:
 
 
   deploy_loadBalancer:
-    needs: deploy_pipeline_ansible
+    needs: [deploy_pipeline_terraform, deploy_pipeline_ansible]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
