@@ -32,6 +32,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create auto.tfvars
+        run: |
+          echo "image = \":8082/repository/spring-petclinic/petclinic-test\"" > ./variables.auto.tfvars
+          echo "insecure_host = \"\"" >> ./variables.auto.tfvars
+          echo "mysql_url = \"jdbc:mysql:///petclinic\"" >> ./variables.auto.tfvars
+
+        working-directory: ./terraform/loadBalancer
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
