@@ -35,11 +35,3 @@ module "compute" {
   mysql_user           = var.mysql_user
   mysql_password       = var.mysql_password
 }
-
-module "database" {
-  source         = "./modules/database"
-  database_name  = var.database_name
-  region         = var.region
-  mysql_user     = var.mysql_user
-  mysql_password = var.mysql_password
-}

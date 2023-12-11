@@ -165,13 +165,4 @@ variable "database_name" {
   type        = string
 }
 
-variable "username" {
-  description = "Username for the database"
-  type        = string
-}
-
-variable "password" {
-  description = "Password for the database"
-  type        = string
-}
 

@@ -12,6 +12,7 @@ jobs:
 
     outputs:
       ip_address: ${{ steps.getip.outputs.ip_address }}
+      db_address: ${{ steps.getip.outputs.db_address }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -37,6 +38,10 @@ jobs:
           tf_ip=$(terraform output -raw vm_public_ip)
           cleaned_ip=$(echo "${tf_ip}" | awk -F: '{print $1}')
           echo "ip_address=$cleaned_ip" >> "$GITHUB_OUTPUT"
+          terraform output -raw vm_public_ip
+          db_ip=$(terraform output -raw db_instance_ip)
+          cleaned_ip=$(echo "${tf_ip}" | awk -F: '{print $1}')
+          echo "db_address=$cleaned_ip" >> "$GITHUB_OUTPUT"
         working-directory: ./terraform/pipelineVM
 
   deploy_pipeline_ansible:
@@ -148,6 +153,7 @@ jobs:
         run: |
           echo "image = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}:8082/repository/spring-petclinic/petclinic-test\"" > ./variables.auto.tfvars
           echo "insecure_host = \"${{ needs.deploy_pipeline_terraform.outputs.ip_address }}\"" >> ./variables.auto.tfvars
+          echo "mysql_url = \"jdbc:mysql://${{ needs.deploy_pipeline_terraform.outputs.db_address }}/petclinic\"" >> ./variables.auto.tfvars
         working-directory: ./terraform/loadBalancer
         
       - name: Deploy Infrastructure
