@@ -13,6 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create auto.tfvars
+        run: |
+          echo "image = \":8082/repository/spring-petclinic/petclinic-test\"" > ./variables.auto.tfvars
+          echo "insecure_host = \"\"" >> ./variables.auto.tfvars
+          echo "mysql_url = \"jdbc:mysql:///petclinic\"" >> ./variables.auto.tfvars
+        working-directory: ./terraform/loadBalancer
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -72,9 +79,13 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+    
 
       - name: Install Ansible
         run: pip install ansible
+      
+      - name: Install Ansible Lint
+        run: pip install ansible-lint
 
       - name: Check Ansible playbooks syntax and linting
         run: |
