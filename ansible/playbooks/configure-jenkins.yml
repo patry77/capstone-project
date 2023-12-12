@@ -193,7 +193,7 @@
           import org.jenkinsci.plugins.plaincredentials.impl.*
 
           def secretFile = new File('/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json')
-          def secretBytes = secretFile.bytes
+          def secretBytes = new SecretBytes.fromBytes(secretFile.bytes)
           def fileCredentials = new FileCredentialsImpl(CredentialsScope.GLOBAL, 'GCLOUD_CREDS', 'GCP Service Account', secretFile.getAbsolutePath(), secretBytes)
           SystemCredentialsProvider.getInstance().getCredentials().add(fileCredentials)
           SystemCredentialsProvider.getInstance().save()
