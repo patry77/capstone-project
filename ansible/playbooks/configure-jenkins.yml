@@ -2,7 +2,7 @@
 - name: Configure jenkins
   hosts: all
   remote_user: "{{ lookup('env', 'REMOTE_USER') }}"
-  become: yes
+  become: true
 
   tasks:
     - name: Set Jenkins password, github login and key, nexus password
@@ -32,7 +32,7 @@
         url: http://localhost:8085
         timeout: 120
         state: latest
-      with_items:  
+      with_items:
         - ace-editor
         - ant
         - antisamy-markup-formatter

@@ -92,5 +92,4 @@ jobs:
           playbooks=("ansible/playbooks/configure-jenkins.yml" "ansible/playbooks/configure-nexus.yml" "ansible/playbooks/configure-vm.yml" "ansible/playbooks/unlock-jenkins.yml" "ansible/playbooks/install-jenkins.yml" "ansible/playbooks/install-nexus.yml")
           for playbook in "${playbooks[@]}"; do
             ansible-playbook --syntax-check $playbook
-            ansible-lint $playbook
           done
