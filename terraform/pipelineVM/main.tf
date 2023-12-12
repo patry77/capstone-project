@@ -8,8 +8,8 @@ module "compute" {
 
 module "database" {
   source         = "./modules/database"
-  mysql_user = var.mysql_user
+  mysql_user     = var.mysql_user
   mysql_password = var.mysql_password
-  database_name = var.database_name
-  region = var.region
+  database_name  = var.database_name
+  region         = var.region
 }

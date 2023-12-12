@@ -159,10 +159,6 @@ variable "mysql_password" {
   type        = string
 }
 
-#Database
-variable "database_name" {
-  description = "Name of the database"
-  type        = string
-}
+
 
 
