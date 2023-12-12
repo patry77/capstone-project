@@ -192,12 +192,11 @@
           import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
           import org.jenkinsci.plugins.plaincredentials.impl.*
 
-          File secretFile = new File('/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json')
-          SecretBytes secretBytes = SecretBytes.fromBytes(secretFile.bytes)
-          FileCredentials fileCredentials = new SecretBytesCredentialsImpl(CredentialsScope.GLOBAL, 'GCLOUD_CREDS', 'GCP Service Account', secretBytes)
-
-          CredentialsStore store = Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
-
-          store.addCredentials(Domain.global(), fileCredentials)
+          def secretFile = new File('/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json')
+          def secretBytes = secretFile.bytes
+          def fileCredentials = new FileCredentialsImpl(CredentialsScope.GLOBAL, 'GCLOUD_CREDS', 'GCP Service Account', secretFile.getAbsolutePath(), secretBytes
+          fileCredentials.setSecretBytes(secretBytes)
+          SystemCredentialsProvider.getInstance().getCredentials().add(fileCredentials)
+          SystemCredentialsProvider.getInstance().save()
           EOF
       ignore_errors: yes

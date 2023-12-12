@@ -64,3 +64,21 @@ resource "google_compute_instance_group_manager" "instance_group_manager" {
   }
   target_size = var.group_manager_size
 }
+# resource "google_monitoring_uptime_check_config" "load_balancer_monitoring" {
+#   display_name = "Load Balancer Monitoring"
+#   timeout = 10
+#   monitored_resource {
+#     type = "gce_instance"
+#     labels = {
+#       instance_id = google_compute_instance_group_manager.instance_group_manager.instance_template
+#     }
+#   }
+#   http_check {
+#     path = "/"
+#     port = var.group_manager_port
+#     use_ssl = false
+#     valid_http_codes = "200"
+#     }
+#   }
+#   selected_regions = ["global"]
+# }
