@@ -70,3 +70,6 @@
           content: "{{ gcp_service_account_key }}"
           dest: /home/ubuntu/gcp-service-account.json
         when: ansible_os_family == "Debian"
+
+      - name: Add VM IP to insecure hosts
+        command: echo '{ "insecure-registries": ["{{ lookup('env', 'VM_IP') }}:8082"] }' | sudo tee /etc/docker/daemon.json
