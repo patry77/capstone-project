@@ -195,7 +195,6 @@
           def secretFile = new File('/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json')
           def secretBytes = secretFile.bytes
           def fileCredentials = new FileCredentialsImpl(CredentialsScope.GLOBAL, 'GCLOUD_CREDS', 'GCP Service Account', secretFile.getAbsolutePath(), secretBytes)
-          fileCredentials.setSecretBytes(secretBytes)
           SystemCredentialsProvider.getInstance().getCredentials().add(fileCredentials)
           SystemCredentialsProvider.getInstance().save()
           EOF

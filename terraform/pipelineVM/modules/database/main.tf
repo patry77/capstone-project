@@ -12,6 +12,7 @@ resource "google_sql_database_instance" "petclinic" {
       }
     }
   }
+  deletion_protection = false
 }
 resource "google_sql_user" "users" {
   name     = var.mysql_user
