@@ -191,9 +191,12 @@
           import com.cloudbees.plugins.credentials.domains.*
           import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
           import org.jenkinsci.plugins.plaincredentials.impl.*
-
+          import org.jenkinsci.plugins.plaincredentials.impl.SecretBytes
+          import org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl
+          
           def secretFile = new File('/home/{{ lookup('env', 'REMOTE_USER') }}/gcp-service-account.json')
-          def secretBytes = new SecretBytes.fromBytes(secretFile.bytes)
+          secretFile = secretFile.text
+          def secretBytes = new SecretBytes.fromString(secretFile)
           def fileCredentials = new FileCredentialsImpl(CredentialsScope.GLOBAL, 'GCLOUD_CREDS', 'GCP Service Account', secretFile.getAbsolutePath(), secretBytes)
           SystemCredentialsProvider.getInstance().getCredentials().add(fileCredentials)
           SystemCredentialsProvider.getInstance().save()
