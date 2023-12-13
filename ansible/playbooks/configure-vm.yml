@@ -75,3 +75,8 @@
       - name: Add VM IP to insecure hosts
         shell: |
           echo '{ "insecure-registries": ["{{ lookup('env', 'VM_IP') }}:8082"] }' | sudo tee /etc/docker/daemon.json
+      
+      - name: Restart Docker
+        service:
+          name: docker
+          state: restarted
